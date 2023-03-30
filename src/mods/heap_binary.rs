@@ -1,28 +1,29 @@
 #![allow(unused)]
 use crate::mods::task::{Task, QInvariant, RInvariant};
+use crate::heap::heap_binary::HeapTree;
 use std::cmp::{max, Ordering};
-use std::collections::BinaryHeap;
+
 
 
 
 #[derive(Debug)]
 pub struct ShrageContextBH {
-    pub available_tasks: BinaryHeap<QInvariant>,
-    pub unavailable_tasks: BinaryHeap<RInvariant>,
+    pub available_tasks: HeapTree<QInvariant>,
+    pub unavailable_tasks: HeapTree<RInvariant>,
 }
 
 impl ShrageContextBH {
     pub fn new() -> ShrageContextBH {
         ShrageContextBH {
-            unavailable_tasks: BinaryHeap::new(),
-            available_tasks: BinaryHeap::new(),
+            unavailable_tasks: HeapTree::new(),
+            available_tasks: HeapTree::new(),
         }
     }
 
     pub fn from_vec(tasks: &Vec<Task>) -> ShrageContextBH {
         ShrageContextBH {
-            unavailable_tasks: BinaryHeap::from_iter(tasks.iter().map(|t| t.into())),
-            available_tasks: BinaryHeap::new(),
+            unavailable_tasks: HeapTree::from_iter(tasks.iter().map(|t| t.into())),
+            available_tasks: HeapTree::new(),
         }
     }
 }
@@ -104,7 +105,7 @@ mod tests {
 
     #[test]
     fn test_comparisons_rinvariant() {
-        let mut heap: BinaryHeap<RInvariant> = tasks!().iter().map(|t| t.into()).collect();
+        let mut heap: HeapTree<RInvariant> = tasks!().iter().map(|t| t.into()).collect();
         let aa = heap.pop().unwrap();
         println!("{:#?}, {:#?}", aa, RInvariant::from(Task::new(0, 6, 17)));
         assert_eq!(aa, Task::new(0, 6, 17).into());
@@ -113,7 +114,21 @@ mod tests {
 
     #[test]
     fn test_comparisons_qinvariant() {
-        let mut heap: BinaryHeap<QInvariant> = tasks!().iter().map(|t| t.into()).collect();
+        let mut heap: HeapTree<QInvariant> = tasks!().iter().map(|t| t.into()).collect();
         assert_eq!(heap.pop().unwrap().0, Task::new(13, 6, 26).into());
+    }
+
+    #[test]
+    fn test_std_heap() {
+        let mut heap: HeapTree<Task> = HeapTree::new();
+        heap.push(Task::new(4, 4, 4));
+        heap.push(Task::new(2, 2, 2));
+        heap.push(Task::new(1, 1, 1));
+        heap.push(Task::new(3, 3, 3));
+        assert_eq!(heap.pop(), Some(Task::new(4, 4, 4)));
+        assert_eq!(heap.pop(), Some(Task::new(3, 3, 3)));
+        assert_eq!(heap.pop(), Some(Task::new(2, 2, 2)));
+        assert_eq!(heap.pop(), Some(Task::new(1, 1, 1)));
+        assert_eq!(heap.pop(), None);
     }
 }

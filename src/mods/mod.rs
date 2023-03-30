@@ -1,5 +1,6 @@
 pub mod std_heaps;
 pub mod std_vecs;
+pub mod heap_binary;
 
 pub mod task {
     use std::fmt::Display;

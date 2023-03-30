@@ -113,14 +113,12 @@ mod tests {
     #[test]
     fn test_comparisons_rinvariant() {
         let mut heap: HeapTree<RInvariant> = tasks!().iter().map(|t| t.into()).collect();
-        println!("{:#?}", heap);
         assert_eq!(heap.pop().unwrap(), Task::new(0, 6, 17).into());
     }
 
     #[test]
     fn test_comparisons_qinvariant() {
         let mut heap: HeapTree<QInvariant> = tasks!().iter().map(|t| t.into()).collect();
-        println!("{:#?}", heap);
         assert_eq!(heap.pop().unwrap().0, Task::new(13, 6, 26).into());
     }
 }

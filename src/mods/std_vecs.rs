@@ -91,7 +91,8 @@ pub fn shrage_vecs_sort_r(mut tasks: Vec<Task>) -> (Vec<Task>, u32) {
     let mut order = Vec::new();
     tasks.sort_by(|a, b| a.r.cmp(&b.r));
 
-    // additional scans though the vec make the code moref functional
+    // additional scans though the vec are necessary
+    // the code is more functional
     while !tasks.is_empty() {
         if let Some((idx, task)) = tasks
             .iter()
@@ -112,9 +113,7 @@ pub fn shrage_vecs_sort_r(mut tasks: Vec<Task>) -> (Vec<Task>, u32) {
 
 #[cfg(test)]
 mod tests {
-    #[allow(unused)]
     use super::*;
-    #[allow(unused)]
     use crate::{tasks, correct_order};
 
     #[test]
