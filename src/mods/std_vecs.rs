@@ -110,6 +110,7 @@ pub fn shrage_vecs_sort_r(mut tasks: Vec<Task>) -> (Vec<Task>, u32) {
     (order, cmax)
 }
 
+#[cfg(test)]
 mod tests {
     #[allow(unused)]
     use super::*;
@@ -119,7 +120,6 @@ mod tests {
     #[test]
     fn shrage_vecs_sort_q_test() {
         let tasks = tasks!();
-
         let cmax = shrage_vecs_sort_q_cmax(tasks);
         assert_eq!(cmax, 53);
     }
@@ -127,7 +127,6 @@ mod tests {
     #[test]
     fn shrage_vecs_sort_q_test_order() {
         let tasks = tasks!();
-
         let (order, cmax) = shrage_vecs_sort_q(tasks);
         assert_eq!(cmax, 53);
         assert_eq!(order, correct_order!());
@@ -136,7 +135,6 @@ mod tests {
     #[test]
     fn shrage_vecs_v_sort_r_test() {
         let tasks = tasks!();
-
         let cmax = shrage_vecs_sort_r_cmax(tasks);
         assert_eq!(cmax, 53);
     }
@@ -144,7 +142,6 @@ mod tests {
     #[test]
     fn shrage_vecs_sort_r_test_order() {
         let tasks = tasks!();
-
         let (order, cmax) = shrage_vecs_sort_r(tasks);
         assert_eq!(cmax, 53);
         assert_eq!(order, correct_order!());

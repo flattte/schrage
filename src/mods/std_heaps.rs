@@ -140,9 +140,10 @@ pub fn shrage_heaps_bh_cmax(tasks: Vec<Task>) -> u32 {
     cmax
 }
 
+#[cfg(test)]
 mod tests {
     #[allow(unused)]
-    use crate::{tasks, correct_order};
+    use crate::{correct_order, tasks};
 
     #[allow(unused)]
     use super::*;
@@ -150,7 +151,6 @@ mod tests {
     #[test]
     fn test_shrage_heaps() {
         let tasks = tasks!();
-
         let cmax = shrage_heaps_bh_cmax(tasks);
         assert_eq!(cmax, 53);
     }
@@ -158,7 +158,6 @@ mod tests {
     #[test]
     fn test_shrage_heaps_order() {
         let tasks = tasks!();
-
         let (order, cmax) = shrage_heaps_bh(tasks);
         assert_eq!(cmax, 53);
         assert_eq!(order, correct_order!());
@@ -166,24 +165,13 @@ mod tests {
 
     #[test]
     fn test_comparisons_rinvariant() {
-
-        let mut heap: BinaryHeap<RInvariant> = BinaryHeap::from(
-            tasks!()
-                .iter()
-                .map(|t| t.into())
-                .collect::<Vec<RInvariant>>(),
-        );
+        let mut heap: BinaryHeap<RInvariant> = tasks!().iter().map(|t| t.into()).collect();
         assert_eq!(heap.pop().unwrap(), Task::new(0, 6, 17).into());
     }
 
     #[test]
     fn test_comparisons_qinvariant() {
-        let mut heap: BinaryHeap<QInvariant> = BinaryHeap::from(
-            tasks!()
-                .iter()
-                .map(|t| t.into())
-                .collect::<Vec<QInvariant>>(),
-        );
+        let mut heap: BinaryHeap<QInvariant> = tasks!().iter().map(|t| t.into()).collect();
         assert_eq!(heap.pop().unwrap().0, Task::new(13, 6, 26).into());
     }
 }
