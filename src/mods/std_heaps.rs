@@ -6,29 +6,29 @@ use std::collections::BinaryHeap;
 
 
 #[derive(Debug)]
-pub struct ShrageContextBH {
+pub struct SchrageContextBH {
     pub available_tasks: BinaryHeap<QInvariant>,
     pub unavailable_tasks: BinaryHeap<RInvariant>,
 }
 
-impl ShrageContextBH {
-    pub fn new() -> ShrageContextBH {
-        ShrageContextBH {
+impl SchrageContextBH {
+    pub fn new() -> SchrageContextBH {
+        SchrageContextBH {
             unavailable_tasks: BinaryHeap::new(),
             available_tasks: BinaryHeap::new(),
         }
     }
 
-    pub fn from_vec(tasks: &Vec<Task>) -> ShrageContextBH {
-        ShrageContextBH {
+    pub fn from_vec(tasks: &Vec<Task>) -> SchrageContextBH {
+        SchrageContextBH {
             unavailable_tasks: BinaryHeap::from_iter(tasks.iter().map(|t| t.into())),
             available_tasks: BinaryHeap::new(),
         }
     }
 }
 
-pub fn shrage_heaps_bh(tasks: Vec<Task>) -> (Vec<Task>, u32) {
-    let mut ctx = ShrageContextBH::from_vec(&tasks);
+pub fn schrage_heaps_bh(tasks: Vec<Task>) -> (Vec<Task>, u32) {
+    let mut ctx = SchrageContextBH::from_vec(&tasks);
     let mut t = 0;
     let mut cmax = 0;
     let mut order = Vec::new();
@@ -58,8 +58,8 @@ pub fn shrage_heaps_bh(tasks: Vec<Task>) -> (Vec<Task>, u32) {
 }
 
 // just cmax
-pub fn shrage_heaps_bh_cmax(tasks: Vec<Task>) -> u32 {
-    let mut ctx = ShrageContextBH::from_vec(&tasks);
+pub fn schrage_heaps_bh_cmax(tasks: Vec<Task>) -> u32 {
+    let mut ctx = SchrageContextBH::from_vec(&tasks);
     let mut t = 0;
     let mut cmax = 0;
 
@@ -88,16 +88,16 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_shrage_heaps() {
+    fn test_schrage_heaps() {
         let tasks = tasks!();
-        let cmax = shrage_heaps_bh_cmax(tasks);
+        let cmax = schrage_heaps_bh_cmax(tasks);
         assert_eq!(cmax, 53);
     }
 
     #[test]
-    fn test_shrage_heaps_order() {
+    fn test_schrage_heaps_order() {
         let tasks = tasks!();
-        let (order, cmax) = shrage_heaps_bh(tasks);
+        let (order, cmax) = schrage_heaps_bh(tasks);
         assert_eq!(cmax, 53);
         assert_eq!(order, correct_order!());
     }
