@@ -2,16 +2,6 @@
 use crate::mods::task::Task;
 use std::cmp::max;
 
-#[derive(Debug)]
-pub struct SchrageContextV {
-    pub tasks: Vec<Task>,
-}
-
-impl SchrageContextV {
-    pub fn new() -> SchrageContextV {
-        SchrageContextV { tasks: Vec::new() }
-    }
-}
 
 pub fn schrage_vecs_sort_q_cmax(mut tasks: Vec<Task>) -> u32 {
     let mut t = 0;
