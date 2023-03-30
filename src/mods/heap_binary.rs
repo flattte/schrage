@@ -107,7 +107,6 @@ mod tests {
     fn test_comparisons_rinvariant() {
         let mut heap: HeapTree<RInvariant> = tasks!().iter().map(|t| t.into()).collect();
         let aa = heap.pop().unwrap();
-        println!("{:#?}, {:#?}", aa, RInvariant::from(Task::new(0, 6, 17)));
         assert_eq!(aa, Task::new(0, 6, 17).into());
         //assert_eq!(heap.pop().unwrap(), Task::new(0, 6, 17).into());
     }
