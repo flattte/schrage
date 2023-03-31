@@ -15,6 +15,11 @@ lazy_static! {
     static ref TEST_DATA: Vec<TestData> = parse_test_file("schr.data").unwrap();
 }
 
+#[test]
+fn parsed_test() {
+    assert_eq!(TEST_DATA.len(), 8);
+}
+
 #[derive(Debug, Default)]
 struct TestData {
     data_name: String,
@@ -22,13 +27,61 @@ struct TestData {
     data: Vec<Task>,
     order: Vec<Task>,
     cmax: u32,
+    cmax_preemptive: u32,
 }
 
-struct ResultData {
-    cmax: u32,
-    order: Option<Vec<Task>>,
+
+macro_rules! generate_algorithm_tests {
+    ($test_name:ident, $alg_func:ident, $idx:expr) => {
+        #[test]
+        fn $test_name() {
+            let cmax = $alg_func(TEST_DATA[$idx].data.clone());
+            assert_eq!(&cmax, &TEST_DATA[$idx].cmax);
+        }
+    };
 }
 
+macro_rules! generate_algorithm_tests_preemptive {
+    ($test_name:ident, $alg_func:ident, $idx:expr) => {
+        #[test]
+        fn $test_name() {
+            let cmax = $alg_func(TEST_DATA[$idx].data.clone());
+            assert_eq!(&cmax, &TEST_DATA[$idx].cmax_preemptive);
+            println!("{:#?}\n {} : {:#?}", TEST_DATA[$idx], cmax, TEST_DATA[$idx].cmax_preemptive);
+        
+        }
+    };
+}
+
+macro_rules! test_alg {
+    ($alg_name:ident, $($test_case:expr),*) => {
+        paste!{
+            $(
+                generate_algorithm_tests!([<$alg_name _test $test_case>], $alg_name, $test_case);
+            )*
+        }
+    };
+}
+
+macro_rules! test_alg_preemptive {
+    ($alg_name:ident, $($test_case:expr),*) => {
+        paste!{
+            $(
+                generate_algorithm_tests_preemptive!([<$alg_name _test $test_case>], $alg_name, $test_case);
+            )*
+        }
+    }
+}
+
+// test cases from the website
+
+test_alg!(schrage_vecs_sort_q_cmax, 0, 1, 2, 3, 5, 6, 7);
+test_alg!(schrage_vecs_sort_r_cmax, 0, 1, 2, 3, 5, 6, 7);
+test_alg!(schrage_custom_heaps_cmax, 0, 1, 2, 3, 5, 6, 7);
+test_alg!(schrage_heaps_bh_cmax, 0, 1, 2, 3, 5, 6, 7);
+test_alg_preemptive!(schrage_preemptive_heaps_bh_cmax, 0, 1, 2, 3, 5, 6, 7);
+
+// looks kinda ugly but gets the parsing done
 fn parse_test_file(filename: &str) -> Option<Vec<TestData>> {
     let mut file_path: PathBuf = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     file_path.push("src/tests");
@@ -64,6 +117,15 @@ fn parse_test_file(filename: &str) -> Option<Vec<TestData>> {
                 });
             }
             while let Some(l) = lines.next() {
+                if l == "schrpmtn:" {
+                    break;
+                }
+            }
+            if let Some(l) = lines.next() {
+                data.cmax_preemptive = l.parse::<u32>().unwrap();
+            }
+
+            while let Some(l) = lines.next() {
                 if l == "schr:" {
                     break;
                 }
@@ -90,96 +152,3 @@ fn parse_test_file(filename: &str) -> Option<Vec<TestData>> {
     }
     None
 }
-
-#[test]
-fn parsed_test() {
-    assert_eq!(TEST_DATA.len(), 8);
-}
-
-macro_rules! generate_algorithm_tests {
-    ($test_name:ident, $alg_func:ident, $idx:expr) => {
-        #[test]
-        fn $test_name() {
-            let cmax = $alg_func(TEST_DATA[$idx].data.clone());
-            assert_eq!(&cmax, &TEST_DATA[$idx].cmax);
-        }
-    };
-}
-
-macro_rules! test_alg {
-    ($alg_name:ident) => {
-        paste!{
-            generate_algorithm_tests!([<$alg_name _test1>], $alg_name, 0);
-            generate_algorithm_tests!([<$alg_name _test2>], $alg_name, 1);
-            generate_algorithm_tests!([<$alg_name _test3>], $alg_name, 2);
-            generate_algorithm_tests!([<$alg_name _test4>], $alg_name, 3);
-            generate_algorithm_tests!([<$alg_name _test5>], $alg_name, 4);
-            generate_algorithm_tests!([<$alg_name _test6>], $alg_name, 5);
-            generate_algorithm_tests!([<$alg_name _test7>], $alg_name, 6);
-            generate_algorithm_tests!([<$alg_name _test8>], $alg_name, 7);
-        }
-    };
-}
-
-test_alg!(schrage_vecs_sort_q_cmax);
-test_alg!(schrage_vecs_sort_r_cmax);
-test_alg!(schrage_custom_heaps_cmax);
-test_alg!(schrage_heaps_bh_cmax);
-
-
-
-// fn test_on_all_algs(case: usize) {
-//     let cmax1 = schrage_heaps_bh_cmax(TEST_DATA[case].data.clone());
-//     let cmax2 = schrage_custom_heaps_cmax(TEST_DATA[case].data.clone());
-//     let cmax3 = schrage_vecs_sort_q_cmax(TEST_DATA[case].data.clone());
-//     let cmax4 = schrage_vecs_sort_r_cmax(TEST_DATA[case].data.clone());
-//     assert_eq!(&cmax2, &TEST_DATA[case].cmax);
-//     assert_eq!(&cmax4, &TEST_DATA[case].cmax);
-//     assert_eq!(&cmax3, &TEST_DATA[case].cmax);
-//     assert_eq!(&cmax1, &TEST_DATA[case].cmax);
-// }
-
-// #[test]
-// fn test_shrage_case1() {
-//     test_on_all_algs(0);
-// }
-
-// #[test]
-// fn test_shrage_case2() {
-//     test_on_all_algs(1);
-// }
-
-// #[test]
-// fn test_shrage_case3() {
-//     test_on_all_algs(2);
-// }
-
-// #[test]
-// fn test_shrage_case4() {
-//     test_on_all_algs(3);
-// }
-
-// #[test]
-// fn test_shrage_case5() {
-//     test_on_all_algs(4);
-// }
-
-// #[test]
-// fn test_shrage_case6() {
-//     test_on_all_algs(5);
-// }
-
-// #[test]
-// fn test_shrage_case7() {
-//     test_on_all_algs(6);
-// }
-
-// #[test]
-// fn test_shrage_case8() {
-//     test_on_all_algs(7);
-// }
-
-// #[test]
-// fn test_shrage_case9() {
-//     test_on_all_algs(8);
-// }

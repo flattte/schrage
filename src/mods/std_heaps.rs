@@ -68,20 +68,33 @@ pub fn schrage_preemptive_heaps_bh_cmax(tasks: Vec<Task>) -> u32 {
     let mut t = 0;
     let mut cmax = 0;
 
-    while !available_tasks.is_empty() || !unavailable_tasks.is_empty() {
+    let mut current_task: Option<Task> = None;
+
+    'outer: while !available_tasks.is_empty() || !unavailable_tasks.is_empty() {
         while !unavailable_tasks.is_empty() && unavailable_tasks.peek().unwrap().0.r <= t {
-            let task = unavailable_tasks.pop().unwrap().0;
+            let task: Task = unavailable_tasks.pop().unwrap().into();
             available_tasks.push(task.into());
+            if let Some(mut current) = current_task {
+                if task.q > current.q {
+                    current.p = t - task.r;
+                    t = task.r;
+                    if current.p > 0 {
+                        available_tasks.push(current.into())
+                    }
+                }
+            }
         }
 
         if available_tasks.is_empty() {
             t = unavailable_tasks.peek().unwrap().0.r;
+            current_task = None;
             continue;
         }
 
-        let task = available_tasks.pop().unwrap().0;
-        t += task.p;
-        cmax = max(cmax, t + task.q);
+        let mut task_to_do = available_tasks.pop().unwrap().0;
+        t += task_to_do.p;
+        cmax = max(cmax, t + task_to_do.q);
+        current_task = Some(task_to_do);
     }
 
     cmax

@@ -58,6 +58,12 @@ pub mod task {
         }
     }
 
+    impl Into<Task> for RInvariant {
+        fn into(self) -> Task {
+            self.0
+        }
+    }
+
     #[derive(Eq, Debug)]
     pub struct RInvariant(pub Task);
 
@@ -85,5 +91,30 @@ pub mod task {
         fn cmp(&self, other: &Self) -> Ordering {
             self.0.q.cmp(&other.0.q)
         }
+    }
+
+    impl Into<Task> for QInvariant {
+        fn into(self) -> Task {
+            self.0
+        }
+    }
 }
-}
+
+// pub trait PeekDown {
+//     type Item;
+
+//     fn peek_down(&mut self) -> Option<&Self::Item>;
+// }
+
+// use std::collections::BinaryHeap;
+
+// impl<T: Ord> PeekDown for BinaryHeap<T> {
+//     type Item = T;
+
+//     fn peek_down(&mut self) -> Option<&Self::Item> {
+//         let data = self.as_slice();
+
+
+//         None
+//     }
+// } 
