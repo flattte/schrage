@@ -7,29 +7,29 @@ use std::cmp::{max, Ordering};
 
 
 #[derive(Debug)]
-pub struct SchrageContextBH {
+pub struct SchrageContextBT {
     pub available_tasks: HeapTree<QInvariant>,
     pub unavailable_tasks: HeapTree<RInvariant>,
 }
 
-impl SchrageContextBH {
-    pub fn new() -> SchrageContextBH {
-        SchrageContextBH {
+impl SchrageContextBT {
+    pub fn new() -> SchrageContextBT {
+        SchrageContextBT {
             unavailable_tasks: HeapTree::new(),
             available_tasks: HeapTree::new(),
         }
     }
 
-    pub fn from_vec(tasks: &Vec<Task>) -> SchrageContextBH {
-        SchrageContextBH {
+    pub fn from_vec(tasks: &Vec<Task>) -> SchrageContextBT {
+        SchrageContextBT {
             unavailable_tasks: HeapTree::from_iter(tasks.iter().map(|t| t.into())),
             available_tasks: HeapTree::new(),
         }
     }
 }
 
-pub fn schrage_heaps_bh(tasks: Vec<Task>) -> (Vec<Task>, u32) {
-    let mut ctx = SchrageContextBH::from_vec(&tasks);
+pub fn schrage_custom_heaps(tasks: Vec<Task>) -> (Vec<Task>, u32) {
+    let mut ctx = SchrageContextBT::from_vec(&tasks);
     let mut t = 0;
     let mut cmax = 0;
     let mut order = Vec::new();
@@ -59,8 +59,8 @@ pub fn schrage_heaps_bh(tasks: Vec<Task>) -> (Vec<Task>, u32) {
 }
 
 // just cmax
-pub fn schrage_heaps_bh_cmax(tasks: Vec<Task>) -> u32 {
-    let mut ctx = SchrageContextBH::from_vec(&tasks);
+pub fn schrage_custom_heaps_cmax(tasks: Vec<Task>) -> u32 {
+    let mut ctx = SchrageContextBT::from_vec(&tasks);
     let mut t = 0;
     let mut cmax = 0;
 
@@ -91,14 +91,14 @@ mod tests {
     #[test]
     fn test_schrage_heaps() {
         let tasks = tasks!();
-        let cmax = schrage_heaps_bh_cmax(tasks);
+        let cmax = schrage_custom_heaps_cmax(tasks);
         assert_eq!(cmax, 53);
     }
 
     #[test]
     fn test_schrage_heaps_order() {
         let tasks = tasks!();
-        let (order, cmax) = schrage_heaps_bh(tasks);
+        let (order, cmax) = schrage_custom_heaps(tasks);
         assert_eq!(cmax, 53);
         assert_eq!(order, correct_order!());
     }

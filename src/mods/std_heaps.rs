@@ -5,50 +5,29 @@ use std::collections::BinaryHeap;
 
 
 
-#[derive(Debug)]
-pub struct SchrageContextBH {
-    pub available_tasks: BinaryHeap<QInvariant>,
-    pub unavailable_tasks: BinaryHeap<RInvariant>,
-}
-
-impl SchrageContextBH {
-    pub fn new() -> SchrageContextBH {
-        SchrageContextBH {
-            unavailable_tasks: BinaryHeap::new(),
-            available_tasks: BinaryHeap::new(),
-        }
-    }
-
-    pub fn from_vec(tasks: &Vec<Task>) -> SchrageContextBH {
-        SchrageContextBH {
-            unavailable_tasks: BinaryHeap::from_iter(tasks.iter().map(|t| t.into())),
-            available_tasks: BinaryHeap::new(),
-        }
-    }
-}
-
 pub fn schrage_heaps_bh(tasks: Vec<Task>) -> (Vec<Task>, u32) {
-    let mut ctx = SchrageContextBH::from_vec(&tasks);
+    let mut available_tasks: BinaryHeap<QInvariant> = BinaryHeap::new();
+    let mut unavailable_tasks: BinaryHeap<RInvariant> = tasks.iter().map(|t| t.into()).collect();
     let mut t = 0;
     let mut cmax = 0;
     let mut order = Vec::new();
 
     // heaps make code cleaner and more imperative
-    while !ctx.available_tasks.is_empty() || !ctx.unavailable_tasks.is_empty() {
+    while !available_tasks.is_empty() || !unavailable_tasks.is_empty() {
         // unwrap is safe beacause the while loop condition
-        while !ctx.unavailable_tasks.is_empty() && ctx.unavailable_tasks.peek().unwrap().0.r <= t {
-            let task = ctx.unavailable_tasks.pop().unwrap().0;
-            ctx.available_tasks.push(task.into());
+        while !unavailable_tasks.is_empty() && unavailable_tasks.peek().unwrap().0.r <= t {
+            let task = unavailable_tasks.pop().unwrap().0;
+            available_tasks.push(task.into());
         }
-        if ctx.available_tasks.is_empty() {
+        if available_tasks.is_empty() {
             // unwrap is safe, if the available_tasks is empty
             // then the unavailable_tasks is not empty
             // because of the while loop condition
-            t = ctx.unavailable_tasks.peek().unwrap().0.r;
+            t = unavailable_tasks.peek().unwrap().0.r;
             continue;
         }
 
-        let task = ctx.available_tasks.pop().unwrap().0;
+        let task = available_tasks.pop().unwrap().0;
         t += task.p;
         cmax = max(cmax, t + task.q);
         order.push(task);
@@ -59,28 +38,56 @@ pub fn schrage_heaps_bh(tasks: Vec<Task>) -> (Vec<Task>, u32) {
 
 // just cmax
 pub fn schrage_heaps_bh_cmax(tasks: Vec<Task>) -> u32 {
-    let mut ctx = SchrageContextBH::from_vec(&tasks);
+    let mut available_tasks: BinaryHeap<QInvariant> = BinaryHeap::new();
+    let mut unavailable_tasks: BinaryHeap<RInvariant> = tasks.iter().map(|t| t.into()).collect();
     let mut t = 0;
     let mut cmax = 0;
 
-    while !ctx.available_tasks.is_empty() || !ctx.unavailable_tasks.is_empty() {
-        while !ctx.unavailable_tasks.is_empty() && ctx.unavailable_tasks.peek().unwrap().0.r <= t {
-            let task = ctx.unavailable_tasks.pop().unwrap().0;
-            ctx.available_tasks.push(task.into());
+    while !available_tasks.is_empty() || !unavailable_tasks.is_empty() {
+        while !unavailable_tasks.is_empty() && unavailable_tasks.peek().unwrap().0.r <= t {
+            let task = unavailable_tasks.pop().unwrap().0;
+            available_tasks.push(task.into());
         }
 
-        if ctx.available_tasks.is_empty() {
-            t = ctx.unavailable_tasks.peek().unwrap().0.r;
+        if available_tasks.is_empty() {
+            t = unavailable_tasks.peek().unwrap().0.r;
             continue;
         }
 
-        let task = ctx.available_tasks.pop().unwrap().0;
+        let task = available_tasks.pop().unwrap().0;
         t += task.p;
         cmax = max(cmax, t + task.q);
     }
 
     cmax
 }
+
+pub fn schrage_preemptive_heaps_bh_cmax(tasks: Vec<Task>) -> u32 {
+    let mut available_tasks: BinaryHeap<QInvariant> = BinaryHeap::new();
+    let mut unavailable_tasks: BinaryHeap<RInvariant> = tasks.iter().map(|t| t.into()).collect();
+    let mut t = 0;
+    let mut cmax = 0;
+
+    while !available_tasks.is_empty() || !unavailable_tasks.is_empty() {
+        while !unavailable_tasks.is_empty() && unavailable_tasks.peek().unwrap().0.r <= t {
+            let task = unavailable_tasks.pop().unwrap().0;
+            available_tasks.push(task.into());
+        }
+
+        if available_tasks.is_empty() {
+            t = unavailable_tasks.peek().unwrap().0.r;
+            continue;
+        }
+
+        let task = available_tasks.pop().unwrap().0;
+        t += task.p;
+        cmax = max(cmax, t + task.q);
+    }
+
+    cmax
+}
+
+fn preemtivity() {}
 
 #[cfg(test)]
 mod tests {
