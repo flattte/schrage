@@ -1,9 +1,9 @@
+use paste::paste;
 use std::env;
 use std::fmt::format;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
-use paste::paste;
 
 use super::*;
 use crate::mods::{heap_binary::*, std_heaps::*, std_vecs::*};
@@ -30,7 +30,6 @@ struct TestData {
     cmax_preemptive: u32,
 }
 
-
 macro_rules! generate_algorithm_tests {
     ($test_name:ident, $alg_func:ident, $idx:expr) => {
         #[test]
@@ -47,8 +46,6 @@ macro_rules! generate_algorithm_tests_preemptive {
         fn $test_name() {
             let cmax = $alg_func(TEST_DATA[$idx].data.clone());
             assert_eq!(&cmax, &TEST_DATA[$idx].cmax_preemptive);
-            println!("{:#?}\n {} : {:#?}", TEST_DATA[$idx], cmax, TEST_DATA[$idx].cmax_preemptive);
-        
         }
     };
 }
@@ -86,9 +83,9 @@ fn parse_test_file(filename: &str) -> Option<Vec<TestData>> {
     let mut file_path: PathBuf = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     file_path.push("src/tests");
     file_path.push(&filename);
-    let mut file = File::open(&file_path).map_err(|e| {
-        eprintln!("Error opening test case file {}: {e}", &file_path.display())
-    }).unwrap();
+    let mut file = File::open(&file_path)
+        .map_err(|e| eprintln!("Error opening test case file {}: {e}", &file_path.display()))
+        .unwrap();
     let mut buf = String::new();
     file.read_to_string(&mut buf).unwrap();
 

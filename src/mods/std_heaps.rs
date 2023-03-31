@@ -1,9 +1,7 @@
 #![allow(unused)]
-use crate::mods::task::{Task, QInvariant, RInvariant};
+use crate::mods::task::{QInvariant, RInvariant, Task};
 use std::cmp::{max, Ordering};
 use std::collections::BinaryHeap;
-
-
 
 pub fn schrage_heaps_bh(tasks: Vec<Task>) -> (Vec<Task>, u32) {
     let mut available_tasks: BinaryHeap<QInvariant> = BinaryHeap::new();
@@ -70,7 +68,7 @@ pub fn schrage_preemptive_heaps_bh_cmax(tasks: Vec<Task>) -> u32 {
 
     let mut current_task: Option<Task> = None;
 
-    'outer: while !available_tasks.is_empty() || !unavailable_tasks.is_empty() {
+    while !available_tasks.is_empty() || !unavailable_tasks.is_empty() {
         while !unavailable_tasks.is_empty() && unavailable_tasks.peek().unwrap().0.r <= t {
             let task: Task = unavailable_tasks.pop().unwrap().into();
             available_tasks.push(task.into());
@@ -104,8 +102,8 @@ fn preemtivity() {}
 
 #[cfg(test)]
 mod tests {
-    use crate::{correct_order, tasks};
     use super::*;
+    use crate::{correct_order, tasks};
 
     #[test]
     fn test_schrage_heaps() {
