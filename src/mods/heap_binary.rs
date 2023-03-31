@@ -4,52 +4,29 @@ use crate::heap::heap_binary::HeapTree;
 use std::cmp::{max, Ordering};
 
 
-
-
-#[derive(Debug)]
-pub struct SchrageContextBT {
-    pub available_tasks: HeapTree<QInvariant>,
-    pub unavailable_tasks: HeapTree<RInvariant>,
-}
-
-impl SchrageContextBT {
-    pub fn new() -> SchrageContextBT {
-        SchrageContextBT {
-            unavailable_tasks: HeapTree::new(),
-            available_tasks: HeapTree::new(),
-        }
-    }
-
-    pub fn from_vec(tasks: &Vec<Task>) -> SchrageContextBT {
-        SchrageContextBT {
-            unavailable_tasks: HeapTree::from_iter(tasks.iter().map(|t| t.into())),
-            available_tasks: HeapTree::new(),
-        }
-    }
-}
-
 pub fn schrage_custom_heaps(tasks: Vec<Task>) -> (Vec<Task>, u32) {
-    let mut ctx = SchrageContextBT::from_vec(&tasks);
+    let mut available_tasks: HeapTree<QInvariant> = HeapTree::new();
+    let mut unavailable_tasks: HeapTree<RInvariant> = tasks.iter().map(|t| t.into()).collect();
     let mut t = 0;
     let mut cmax = 0;
     let mut order = Vec::new();
 
     // heaps make code cleaner and more imperative
-    while !ctx.available_tasks.is_empty() || !ctx.unavailable_tasks.is_empty() {
+    while !available_tasks.is_empty() || !unavailable_tasks.is_empty() {
         // unwrap is safe beacause the while loop condition
-        while !ctx.unavailable_tasks.is_empty() && ctx.unavailable_tasks.peek().unwrap().0.r <= t {
-            let task = ctx.unavailable_tasks.pop().unwrap().0;
-            ctx.available_tasks.push(task.into());
+        while !unavailable_tasks.is_empty() && unavailable_tasks.peek().unwrap().0.r <= t {
+            let task = unavailable_tasks.pop().unwrap().0;
+            available_tasks.push(task.into());
         }
-        if ctx.available_tasks.is_empty() {
+        if available_tasks.is_empty() {
             // unwrap is safe, if the available_tasks is empty
             // then the unavailable_tasks is not empty
             // because of the while loop condition
-            t = ctx.unavailable_tasks.peek().unwrap().0.r;
+            t = unavailable_tasks.peek().unwrap().0.r;
             continue;
         }
 
-        let task = ctx.available_tasks.pop().unwrap().0;
+        let task = available_tasks.pop().unwrap().0;
         t += task.p;
         cmax = max(cmax, t + task.q);
         order.push(task);
@@ -60,22 +37,48 @@ pub fn schrage_custom_heaps(tasks: Vec<Task>) -> (Vec<Task>, u32) {
 
 // just cmax
 pub fn schrage_custom_heaps_cmax(tasks: Vec<Task>) -> u32 {
-    let mut ctx = SchrageContextBT::from_vec(&tasks);
+    let mut available_tasks: HeapTree<QInvariant> = HeapTree::new();
+    let mut unavailable_tasks: HeapTree<RInvariant> = tasks.iter().map(|t| t.into()).collect();
     let mut t = 0;
     let mut cmax = 0;
 
-    while !ctx.available_tasks.is_empty() || !ctx.unavailable_tasks.is_empty() {
-        while !ctx.unavailable_tasks.is_empty() && ctx.unavailable_tasks.peek().unwrap().0.r <= t {
-            let task = ctx.unavailable_tasks.pop().unwrap().0;
-            ctx.available_tasks.push(task.into());
+    while !available_tasks.is_empty() || !unavailable_tasks.is_empty() {
+        while !unavailable_tasks.is_empty() && unavailable_tasks.peek().unwrap().0.r <= t {
+            let task = unavailable_tasks.pop().unwrap().0;
+            available_tasks.push(task.into());
         }
 
-        if ctx.available_tasks.is_empty() {
-            t = ctx.unavailable_tasks.peek().unwrap().0.r;
+        if available_tasks.is_empty() {
+            t = unavailable_tasks.peek().unwrap().0.r;
             continue;
         }
 
-        let task = ctx.available_tasks.pop().unwrap().0;
+        let task = available_tasks.pop().unwrap().0;
+        t += task.p;
+        cmax = max(cmax, t + task.q);
+    }
+
+    cmax
+}
+
+pub fn schrage_preemtive_custom_heaps_cmax(tasks: Vec<Task>) -> u32 {
+    let mut available_tasks: HeapTree<QInvariant> = HeapTree::new();
+    let mut unavailable_tasks: HeapTree<RInvariant> = tasks.iter().map(|t| t.into()).collect();
+    let mut t = 0;
+    let mut cmax = 0;
+
+    while !available_tasks.is_empty() || !unavailable_tasks.is_empty() {
+        while !unavailable_tasks.is_empty() && unavailable_tasks.peek().unwrap().0.r <= t {
+            let task = unavailable_tasks.pop().unwrap().0;
+            available_tasks.push(task.into());
+        }
+
+        if available_tasks.is_empty() {
+            t = unavailable_tasks.peek().unwrap().0.r;
+            continue;
+        }
+
+        let task = available_tasks.pop().unwrap().0;
         t += task.p;
         cmax = max(cmax, t + task.q);
     }
