@@ -75,8 +75,10 @@ macro_rules! test_alg_preemptive {
 test_alg!(schrage_vecs_sort_q_cmax, 0, 1, 2, 3, 5, 6, 7);
 test_alg!(schrage_vecs_sort_r_cmax, 0, 1, 2, 3, 5, 6, 7);
 test_alg!(schrage_custom_heaps_cmax, 0, 1, 2, 3, 5, 6, 7);
-test_alg!(schrage_heaps_bh_cmax, 0, 1, 2, 3, 5, 6, 7);
-test_alg_preemptive!(schrage_preemptive_heaps_bh_cmax, 0, 1, 2, 3, 5, 6, 7);
+test_alg!(schrage_heaps_std_cmax, 0, 1, 2, 3, 5, 6, 7);
+test_alg_preemptive!(schrage_preemptive_heaps_std_cmax, 0, 1, 2, 3, 5, 6, 7);
+test_alg_preemptive!(schrage_preemptive_custom_heaps_cmax, 0, 1, 2, 3, 5, 6, 7);
+test_alg_preemptive!(schrage_preemptive_vecs_cmax, 0, 1, 2, 3, 5, 6, 7);
 
 // looks kinda ugly but gets the parsing done
 fn parse_test_file(filename: &str) -> Option<Vec<TestData>> {

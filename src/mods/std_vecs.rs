@@ -2,7 +2,6 @@
 use crate::mods::task::Task;
 use std::cmp::max;
 
-
 pub fn schrage_vecs_sort_q_cmax(mut tasks: Vec<Task>) -> u32 {
     let mut t = 0;
     let mut cmax = 0;
@@ -101,10 +100,48 @@ pub fn schrage_vecs_sort_r(mut tasks: Vec<Task>) -> (Vec<Task>, u32) {
     (order, cmax)
 }
 
+// vec not sorted because the sorting that restores invariant
+// would have to happen in worst case n time which give the alg O(n^2logn)
+pub fn schrage_preemptive_vecs_cmax(mut tasks: Vec<Task>) -> u32 {
+    let mut t = 0;
+    let mut cmax = 0;
+    let mut current_task: Option<Task> = None;
+
+    while !tasks.is_empty() {
+        if let Some((idx, task)) = tasks
+            .iter()
+            .enumerate()
+            .filter(|(_, task)| task.r <= t)
+            .max_by(|(_, a), (_, b)| a.q.cmp(&b.q))
+        {
+            let task = task.clone(); // clone out of the vec so the references are valid
+            if let Some(ref mut current) = current_task {
+                if task.q > current.q {
+                    current.p = t - task.r;
+                    t = task.r;
+                    if current.p > 0 {
+                        tasks.push(*current);
+                    }
+                }
+            }
+
+            t += task.p;
+            cmax = max(cmax, t + task.q);
+            tasks.remove(idx);
+            current_task = Some(task);
+        } else {
+            t = tasks.iter().min_by(|a, b| a.r.cmp(&b.r)).unwrap().r;
+            current_task = None;
+        }
+    }
+
+    cmax
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{tasks, correct_order};
+    use crate::{correct_order, tasks};
 
     #[test]
     fn schrage_vecs_sort_q_test() {

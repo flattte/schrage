@@ -3,7 +3,7 @@ use crate::mods::task::{QInvariant, RInvariant, Task};
 use std::cmp::{max, Ordering};
 use std::collections::BinaryHeap;
 
-pub fn schrage_heaps_bh(tasks: Vec<Task>) -> (Vec<Task>, u32) {
+pub fn schrage_heaps_std(tasks: Vec<Task>) -> (Vec<Task>, u32) {
     let mut available_tasks: BinaryHeap<QInvariant> = BinaryHeap::new();
     let mut unavailable_tasks: BinaryHeap<RInvariant> = tasks.iter().map(|t| t.into()).collect();
     let mut t = 0;
@@ -35,7 +35,7 @@ pub fn schrage_heaps_bh(tasks: Vec<Task>) -> (Vec<Task>, u32) {
 }
 
 // just cmax
-pub fn schrage_heaps_bh_cmax(tasks: Vec<Task>) -> u32 {
+pub fn schrage_heaps_std_cmax(tasks: Vec<Task>) -> u32 {
     let mut available_tasks: BinaryHeap<QInvariant> = BinaryHeap::new();
     let mut unavailable_tasks: BinaryHeap<RInvariant> = tasks.iter().map(|t| t.into()).collect();
     let mut t = 0;
@@ -60,7 +60,7 @@ pub fn schrage_heaps_bh_cmax(tasks: Vec<Task>) -> u32 {
     cmax
 }
 
-pub fn schrage_preemptive_heaps_bh_cmax(tasks: Vec<Task>) -> u32 {
+pub fn schrage_preemptive_heaps_std_cmax(tasks: Vec<Task>) -> u32 {
     let mut available_tasks: BinaryHeap<QInvariant> = BinaryHeap::new();
     let mut unavailable_tasks: BinaryHeap<RInvariant> = tasks.iter().map(|t| t.into()).collect();
     let mut t = 0;
@@ -72,12 +72,12 @@ pub fn schrage_preemptive_heaps_bh_cmax(tasks: Vec<Task>) -> u32 {
         while !unavailable_tasks.is_empty() && unavailable_tasks.peek().unwrap().0.r <= t {
             let task: Task = unavailable_tasks.pop().unwrap().into();
             available_tasks.push(task.into());
-            if let Some(mut current) = current_task {
+            if let Some(ref mut current) = current_task {
                 if task.q > current.q {
                     current.p = t - task.r;
                     t = task.r;
                     if current.p > 0 {
-                        available_tasks.push(current.into())
+                        available_tasks.push(current.to_owned().into())
                     }
                 }
             }
@@ -98,8 +98,6 @@ pub fn schrage_preemptive_heaps_bh_cmax(tasks: Vec<Task>) -> u32 {
     cmax
 }
 
-fn preemtivity() {}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -108,14 +106,14 @@ mod tests {
     #[test]
     fn test_schrage_heaps() {
         let tasks = tasks!();
-        let cmax = schrage_heaps_bh_cmax(tasks);
+        let cmax = schrage_heaps_std_cmax(tasks);
         assert_eq!(cmax, 53);
     }
 
     #[test]
     fn test_schrage_heaps_order() {
         let tasks = tasks!();
-        let (order, cmax) = schrage_heaps_bh(tasks);
+        let (order, cmax) = schrage_heaps_std(tasks);
         assert_eq!(cmax, 53);
         assert_eq!(order, correct_order!());
     }

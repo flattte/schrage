@@ -4,7 +4,7 @@
 #[macro_use] extern crate lazy_static;
 mod mods;
 #[allow(unused_imports)]
-use mods::std_heaps::{schrage_heaps_bh};
+use mods::std_heaps::{schrage_heaps_std};
 mod heap;
 mod benchmark;
 mod tests;
