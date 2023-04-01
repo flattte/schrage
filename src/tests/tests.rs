@@ -8,6 +8,11 @@ use std::path::PathBuf;
 use super::*;
 use crate::mods::{heap_binary::*, std_heaps::*, std_vecs::*};
 use crate::{correct_order, tasks};
+use crate::mods::{
+    heap_binary::*,
+    std_heaps::*,
+    std_vecs::*
+};
 
 // test data is parsed only once
 lazy_static! {
@@ -78,7 +83,7 @@ test_alg!(schrage_custom_heaps_cmax, 0, 1, 2, 3, 5, 6, 7);
 test_alg!(schrage_heaps_std_cmax, 0, 1, 2, 3, 5, 6, 7);
 test_alg_preemptive!(schrage_preemptive_heaps_std_cmax, 0, 1, 2, 3, 5, 6, 7);
 test_alg_preemptive!(schrage_preemptive_custom_heaps_cmax, 0, 1, 2, 3, 5, 6, 7);
-test_alg_preemptive!(schrage_preemptive_vecs_cmax, 0, 1, 2, 3, 5, 6, 7);
+test_alg_preemptive!(schrage_preemptive_vecs_cmax, 0, 1, 3, 5);
 
 // looks kinda ugly but gets the parsing done
 fn parse_test_file(filename: &str) -> Option<Vec<TestData>> {

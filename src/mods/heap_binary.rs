@@ -1,7 +1,7 @@
 #![allow(unused)]
 use crate::mods::task::{Task, QInvariant, RInvariant};
-use crate::heap::heap_binary::HeapTree;
 use std::cmp::{max, Ordering};
+use crate::mods::heap_tree::HeapTree;
 
 
 pub fn schrage_custom_heaps(tasks: Vec<Task>) -> (Vec<Task>, u32) {
@@ -101,8 +101,8 @@ pub fn schrage_preemptive_custom_heaps_cmax(tasks: Vec<Task>) -> u32 {
 
 #[cfg(test)]
 mod tests {
-    use crate::{correct_order, tasks};
     use super::*;
+    use crate::{correct_order, tasks};
 
     #[test]
     fn test_schrage_heaps() {
