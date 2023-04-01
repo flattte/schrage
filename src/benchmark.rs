@@ -27,25 +27,6 @@ fn gen_uniform(
     tasks
 }
 
-fn gen_tasks1() -> Vec<Vec<Task>> {
-    let args: Vec<(usize, Range<u32>, Range<u32>, Range<u32>)> = (1..=50)
-        .into_iter()
-        .step_by(5)
-        .map(|n| {
-            (
-                (1 * n) as usize,
-                (0..100 * n),
-                (0..1000 * n),
-                (0..1000 * n),
-            )
-        })
-        .collect();
-
-    args.iter()
-        .map(|arg| gen_uniform(arg.0, &arg.1, &arg.2, &arg.3))
-        .collect()
-}
-
 fn gen_tasks() -> Vec<Vec<Task>> {
     (1..=50)
         .into_iter()
