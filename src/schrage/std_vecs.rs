@@ -1,5 +1,5 @@
 #![allow(unused)]
-use crate::mods::task::Task;
+use crate::schrage::task::Task;
 use std::cmp::max;
 
 pub fn schrage_vecs_sort_q_cmax(mut tasks: Vec<Task>) -> u32 {

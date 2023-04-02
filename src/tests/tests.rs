@@ -6,9 +6,9 @@ use std::io::prelude::*;
 use std::path::PathBuf;
 
 use super::*;
-use crate::mods::{heap_binary::*, std_heaps::*, std_vecs::*};
+use crate::schrage::{heap_binary::*, std_heaps::*, std_vecs::*};
 use crate::{correct_order, tasks};
-use crate::mods::{
+use crate::schrage::{
     heap_binary::*,
     std_heaps::*,
     std_vecs::*

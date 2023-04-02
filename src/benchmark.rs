@@ -7,8 +7,8 @@ use criterion::{
 use lazy_static::lazy_static;
 use rand::{thread_rng, Rng};
 use std::time::Duration;
-mod mods;
-use crate::mods::{heap_binary::*, std_heaps::*, std_vecs::*, task::Task};
+mod schrage;
+use crate::schrage::{heap_binary::*, std_heaps::*, std_vecs::*, task::Task};
 
 fn gen_uniform(
     amount: usize,
@@ -187,5 +187,5 @@ fn single_iter_through_long_data(c: &mut Criterion) {
 criterion_group!(bench, bench_algs, bench_algs_preemptive, bench_on_big_data);
 criterion_group!(bench_data_heaps, bench_on_big_data);
 criterion_group!(bench_single_alot, single_iter_through_long_data);
-criterion_main!(bench_single_alot);
+criterion_main!(bench);
 

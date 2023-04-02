@@ -3,9 +3,9 @@
 #[macro_use] extern crate serde_json;
 #[macro_use] extern crate lazy_static;
 
-mod mods;
+mod schrage;
 #[allow(unused_imports)]
-use mods::std_heaps::{schrage_heaps_std};
+use schrage::std_heaps::{schrage_heaps_std};
 #[macro_use]
 mod tests;
 

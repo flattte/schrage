@@ -94,7 +94,7 @@ impl<T: Ord> HeapTree<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::mods::task::{QInvariant, RInvariant, Task};
+    use crate::schrage::task::{QInvariant, RInvariant, Task};
     use crate::{correct_order, tasks};
 
     #[test]
