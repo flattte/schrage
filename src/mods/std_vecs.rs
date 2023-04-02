@@ -86,7 +86,7 @@ pub fn schrage_vecs_sort_r(mut tasks: Vec<Task>) -> (Vec<Task>, u32) {
         if let Some((idx, task)) = tasks
             .iter()
             .enumerate()
-            .filter(|(_, task)| task.r <= t)
+            .take_while(|(_, task)| task.r <= t)
             .max_by(|(_, a), (_, b)| a.q.cmp(&b.q))
         {
             t += task.p;
