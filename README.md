@@ -1,5 +1,5 @@
 
-[![Rust](https://github.com/flattte/schrage/actions/workflows/rust.yml/badge.svg)](https://github.com/flattte/schrage/actions/workflows/rust.yml)    [![Rust](https://github.com/flattte/schrage/actions/workflows/rust.yml/badge.svg)](https://github.com/flattte/schrage/actions/workflows/rust.yml)
+[![build + test](https://github.com/flattte/schrage/actions/workflows/rust.yml/badge.svg)](https://github.com/flattte/schrage/actions/workflows/rust.yml)
 # Schrage Algorithm
 
 This projects aims to implement correct schrage algorithm
