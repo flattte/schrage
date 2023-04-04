@@ -42,7 +42,7 @@ impl<T: Ord> HeapTree<T> {
     }
 
     pub fn pop(&mut self) -> Option<T> {
-        if self.heap.len() == 0 {
+        if self.heap.is_empty() {
             return None;
         }
 

@@ -7,12 +7,8 @@ use std::path::PathBuf;
 
 use super::*;
 use crate::schrage::{heap_binary::*, std_heaps::*, std_vecs::*};
+use crate::schrage::{heap_binary::*, std_heaps::*, std_vecs::*};
 use crate::{correct_order, tasks};
-use crate::schrage::{
-    heap_binary::*,
-    std_heaps::*,
-    std_vecs::*
-};
 
 // test data is parsed only once
 lazy_static! {
@@ -89,7 +85,7 @@ test_alg_preemptive!(schrage_preemptive_vecs_cmax, 0, 1, 3, 5);
 fn parse_test_file(filename: &str) -> Option<Vec<TestData>> {
     let mut file_path: PathBuf = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     file_path.push("src/tests");
-    file_path.push(&filename);
+    file_path.push(filename);
     let mut file = File::open(&file_path)
         .map_err(|e| eprintln!("Error opening test case file {}: {e}", &file_path.display()))
         .unwrap();
@@ -103,24 +99,26 @@ fn parse_test_file(filename: &str) -> Option<Vec<TestData>> {
             continue;
         }
         if l[0..1] == *"d" {
-            let mut data = TestData::default();
-            data.data_name = l.to_owned();
+            let mut data = TestData {
+                data_name: l.to_owned(),
+                ..Default::default()
+            };
             if let Some(l) = lines.next() {
                 data.data_size = l.parse().unwrap();
                 data.data = Vec::with_capacity(data.data_size);
             }
-            while let Some(l) = lines.next() {
+            for l in lines.by_ref() {
                 if l.is_empty() {
                     break;
                 }
-                let mut t = l.split(" ").map(|w| w.parse::<u32>().unwrap());
+                let mut t = l.split(' ').map(|w| w.parse::<u32>().unwrap());
                 data.data.push(Task {
                     r: t.next().unwrap(),
                     p: t.next().unwrap(),
                     q: t.next().unwrap(),
                 });
             }
-            while let Some(l) = lines.next() {
+            for l in lines.by_ref() {
                 if l == "schrpmtn:" {
                     break;
                 }
@@ -129,7 +127,7 @@ fn parse_test_file(filename: &str) -> Option<Vec<TestData>> {
                 data.cmax_preemptive = l.parse::<u32>().unwrap();
             }
 
-            while let Some(l) = lines.next() {
+            for l in lines.by_ref() {
                 if l == "schr:" {
                     break;
                 }
@@ -144,7 +142,7 @@ fn parse_test_file(filename: &str) -> Option<Vec<TestData>> {
                     }
                 }
                 data.order = l
-                    .split(" ")
+                    .split(' ')
                     .map(|pos| data.data[pos.parse::<usize>().unwrap() - 1])
                     .collect();
             }

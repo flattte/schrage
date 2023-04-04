@@ -17,6 +17,18 @@ pub mod task {
             Task { r, p, q }
         }
     }
+
+    impl From<RInvariant> for Task {
+        fn from(value: RInvariant) -> Self {
+            value.0
+        }
+    }
+    
+    impl From<QInvariant> for Task {
+        fn from(value: QInvariant) -> Self {
+            value.0
+        }
+    }
     
     use std::fmt::Display;
     impl Display for Task {
@@ -58,12 +70,6 @@ pub mod task {
         }
     }
 
-    impl Into<Task> for RInvariant {
-        fn into(self) -> Task {
-            self.0
-        }
-    }
-
     #[derive(Eq, Debug)]
     pub struct RInvariant(pub Task);
 
@@ -90,12 +96,6 @@ pub mod task {
     impl Ord for QInvariant {
         fn cmp(&self, other: &Self) -> Ordering {
             self.0.q.cmp(&other.0.q)
-        }
-    }
-
-    impl Into<Task> for QInvariant {
-        fn into(self) -> Task {
-            self.0
         }
     }
 

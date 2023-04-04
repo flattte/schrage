@@ -114,7 +114,7 @@ pub fn schrage_preemptive_vecs_cmax(mut tasks: Vec<Task>) -> u32 {
             .filter(|(_, task)| task.r <= t)
             .max_by(|(_, a), (_, b)| a.q.cmp(&b.q))
         {
-            let task = task.clone(); // clone out of the vec so the references are valid
+            let task = *task; // clone out of the vec so the references are valid
             if let Some(ref mut current) = current_task {
                 if task.q > current.q {
                     current.p = t - task.r;
