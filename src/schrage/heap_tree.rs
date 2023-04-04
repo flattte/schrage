@@ -1,7 +1,6 @@
 #![allow(unused)]
 use std::{collections::BinaryHeap, fmt::Debug};
 
-
 #[derive(Debug, Default)]
 pub struct HeapTree<T> {
     pub heap: Vec<T>,

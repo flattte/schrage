@@ -1,8 +1,7 @@
 #![allow(unused)]
-use crate::schrage::task::{Task, QInvariant, RInvariant};
-use std::cmp::{max, Ordering};
 use crate::schrage::heap_tree::HeapTree;
-
+use crate::schrage::task::{QInvariant, RInvariant, Task};
+use std::cmp::{max, Ordering};
 
 pub fn schrage_custom_heaps(tasks: Vec<Task>) -> (Vec<Task>, u32) {
     let mut available_tasks: HeapTree<QInvariant> = HeapTree::new();
@@ -93,7 +92,6 @@ pub fn schrage_preemptive_custom_heaps_cmax(tasks: Vec<Task>) -> u32 {
         t += task_to_do.p;
         cmax = max(cmax, t + task_to_do.q);
         current_task = Some(task_to_do);
-
     }
 
     cmax

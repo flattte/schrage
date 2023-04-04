@@ -32,19 +32,12 @@ fn gen_tasks(
     step_by: usize,
     bound_r: u32,
     bound_p: u32,
-    bound_q: u32
+    bound_q: u32,
 ) -> Vec<Vec<Task>> {
     (1..=mutiplier_higher_bound)
         .into_iter()
         .step_by(step_by)
-        .map(|n| {
-            (
-                (10 * n) as usize,
-                (0..bound_r),
-                (0..bound_p),
-                (0..bound_q),
-            )
-        })
+        .map(|n| ((10 * n) as usize, (0..bound_r), (0..bound_p), (0..bound_q)))
         .map(|arg| gen_uniform(arg.0, &arg.1, &arg.2, &arg.3))
         .collect()
 }
@@ -87,9 +80,9 @@ fn bench_algs(c: &mut Criterion) {
     let sets_of_tasks: &Vec<Vec<Task>> = &*DATA;
     let mut group = c.benchmark_group("Non preemptive algs on random uniform data");
     group
-    .sampling_mode(SamplingMode::Flat)
-    .plot_config(PlotConfiguration::default())
-    .warm_up_time(Duration::from_secs(1));
+        .sampling_mode(SamplingMode::Flat)
+        .plot_config(PlotConfiguration::default())
+        .warm_up_time(Duration::from_secs(1));
 
     for (idx, tasks) in sets_of_tasks.iter().enumerate() {
         group.bench_with_input(
@@ -153,13 +146,14 @@ fn bench_on_big_data(c: &mut Criterion) {
 }
 
 fn single_iter_through_long_data(c: &mut Criterion) {
-    let sets_of_tasks: &Vec<Vec<Task>> = &vec![gen_uniform(2000_000, &(0..10000), &(0..10000), &(0..10000))];
-        let mut group = c.benchmark_group("preemptive algs on random uniform data");
-        group
-            .sample_size(10)
-            .sampling_mode(SamplingMode::Flat)
-            .plot_config(PlotConfiguration::default())
-            .warm_up_time(Duration::from_secs(1));
+    let sets_of_tasks: &Vec<Vec<Task>> =
+        &vec![gen_uniform(2000_000, &(0..10000), &(0..10000), &(0..10000))];
+    let mut group = c.benchmark_group("preemptive algs on random uniform data");
+    group
+        .sample_size(10)
+        .sampling_mode(SamplingMode::Flat)
+        .plot_config(PlotConfiguration::default())
+        .warm_up_time(Duration::from_secs(1));
     for (idx, tasks) in sets_of_tasks.iter().enumerate() {
         group.bench_with_input(
             BenchmarkId::new("schrage_preemptive_heaps_std_cmax", &tasks.len()),
@@ -188,4 +182,3 @@ criterion_group!(bench, bench_algs, bench_algs_preemptive, bench_on_big_data);
 criterion_group!(bench_data_heaps, bench_on_big_data);
 criterion_group!(bench_single_alot, single_iter_through_long_data);
 criterion_main!(bench);
-

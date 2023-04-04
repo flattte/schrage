@@ -1,7 +1,7 @@
-pub mod std_heaps;
-pub mod std_vecs;
 pub mod heap_binary;
 pub mod heap_tree;
+pub mod std_heaps;
+pub mod std_vecs;
 
 pub mod task {
     #[derive(Eq, PartialEq, PartialOrd, Ord, Copy, Clone, Debug)]
@@ -10,7 +10,7 @@ pub mod task {
         pub p: u32, // working time
         pub q: u32, // cooldown time
     }
-    
+
     impl Task {
         #[allow(unused)]
         pub fn new(r: u32, p: u32, q: u32) -> Task {
@@ -23,13 +23,13 @@ pub mod task {
             value.0
         }
     }
-    
+
     impl From<QInvariant> for Task {
         fn from(value: QInvariant) -> Self {
             value.0
         }
     }
-    
+
     use std::fmt::Display;
     impl Display for Task {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -131,8 +131,6 @@ pub mod task {
     }
 }
 
-
-
 // pub trait PeekDown {
 //     type Item;
 
@@ -147,7 +145,6 @@ pub mod task {
 //     fn peek_down(&mut self) -> Option<&Self::Item> {
 //         let data = self.as_slice();
 
-
 //         None
 //     }
-// } 
+// }
