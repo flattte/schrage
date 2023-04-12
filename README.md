@@ -6,7 +6,7 @@ Implementation of correct schrage algorithm
 ```sh
 cargo test
 ```
-and benchmark the rusults
+Benchamarking
 ```sh
 cargo bench
 ```
