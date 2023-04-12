@@ -2,7 +2,7 @@
 [![build + test](https://github.com/flattte/schrage/actions/workflows/rust.yml/badge.svg)](https://github.com/flattte/schrage/actions/workflows/rust.yml)
 # Schrage Algorithm
 
-This projects aims to implement correct schrage algorithm
+Implementation of correct schrage algorithm
 ```sh
 cargo test
 ```
