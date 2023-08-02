@@ -1,34 +1,35 @@
-use paste::paste;
 use std::env;
-use std::fmt::format;
 use std::fs::File;
-use std::io::prelude::*;
+use std::io::Read;
 use std::path::PathBuf;
 
-use super::*;
-use crate::schrage::{heap_binary::*, std_heaps::*, std_vecs::*};
-use crate::schrage::{heap_binary::*, std_heaps::*, std_vecs::*};
-use crate::{correct_order, tasks};
+use lazy_static::lazy_static;
+use paste::paste;
 
-// test data is parsed only once
-lazy_static! {
-    #[derive(Debug)]
-    static ref TEST_DATA: Vec<TestData> = parse_test_file("schr.data").unwrap();
-}
-
-#[test]
-fn parsed_test() {
-    assert_eq!(TEST_DATA.len(), 8);
-}
+use crate::custom_heap_impl::*;
+use crate::std_heap_impl::*;
+use crate::std_vecs_impl::*;
+use crate::task::Task;
 
 #[derive(Debug, Default)]
 struct TestData {
-    data_name: String,
     data_size: usize,
     data: Vec<Task>,
     order: Vec<Task>,
     cmax: u32,
     cmax_preemptive: u32,
+    _data_name: String,
+}
+
+// test data is parsed only once
+lazy_static! {
+    #[derive(Debug)]
+    static ref TEST_DATA: Vec<TestData> = parse_test_file("test_data/schr.data");
+}
+
+#[test]
+fn parsed_test() {
+    assert_eq!(TEST_DATA.len(), 8);
 }
 
 macro_rules! generate_algorithm_tests {
@@ -72,7 +73,6 @@ macro_rules! test_alg_preemptive {
 }
 
 // test cases from the website
-
 test_alg!(schrage_vecs_sort_q_cmax, 0, 1, 2, 3, 5, 6, 7);
 test_alg!(schrage_vecs_sort_r_cmax, 0, 1, 2, 3, 5, 6, 7);
 test_alg!(schrage_custom_heaps_cmax, 0, 1, 2, 3, 5, 6, 7);
@@ -82,25 +82,24 @@ test_alg_preemptive!(schrage_preemptive_custom_heaps_cmax, 0, 1, 2, 3, 5, 6, 7);
 test_alg_preemptive!(schrage_preemptive_vecs_cmax, 0, 1, 3, 5);
 
 // looks kinda ugly but gets the parsing done
-fn parse_test_file(filename: &str) -> Option<Vec<TestData>> {
+fn parse_test_file(filename: &str) -> Vec<TestData> {
     let mut file_path: PathBuf = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    file_path.push("src/tests");
     file_path.push(filename);
-    let mut file = File::open(&file_path)
-        .map_err(|e| eprintln!("Error opening test case file {}: {e}", &file_path.display()))
-        .unwrap();
+    let mut file = File::open(&file_path).unwrap();
+
     let mut buf = String::new();
     file.read_to_string(&mut buf).unwrap();
 
     let mut dv: Vec<TestData> = Vec::new();
     let mut lines = buf.lines();
+
     while let Some(l) = lines.next() {
         if l.is_empty() {
             continue;
         }
         if l[0..1] == *"d" {
             let mut data = TestData {
-                data_name: l.to_owned(),
+                _data_name: l.to_owned(),
                 ..Default::default()
             };
             if let Some(l) = lines.next() {
@@ -135,12 +134,7 @@ fn parse_test_file(filename: &str) -> Option<Vec<TestData>> {
             if let Some(l) = lines.next() {
                 data.cmax = l.parse::<u32>().unwrap();
             }
-            if let Some(mut l) = lines.next() {
-                if let Some(l2) = lines.next() {
-                    if !l2.is_empty() {
-                        let l = &format!("{}{}", l, l2);
-                    }
-                }
+            if let Some(l) = lines.next() {
                 data.order = l
                     .split(' ')
                     .map(|pos| data.data[pos.parse::<usize>().unwrap() - 1])
@@ -149,8 +143,5 @@ fn parse_test_file(filename: &str) -> Option<Vec<TestData>> {
             dv.push(data);
         }
     }
-    if !dv.is_empty() {
-        return Some(dv);
-    }
-    None
+    dv
 }

@@ -1,6 +1,3 @@
-#![allow(unused)]
-use std::fmt::Debug;
-
 #[derive(Debug, Default)]
 pub struct HeapTree<T> {
     pub heap: Vec<T>,
@@ -74,13 +71,6 @@ impl<T: Ord> HeapTree<T> {
         }
     }
 
-    // assumeses that self.heap is random distributed vec
-    fn heapify_vec(&mut self) {
-        for i in (0..=self.heap.len() / 2).rev() {
-            self.sift_down(i)
-        }
-    }
-
     pub fn is_empty(&self) -> bool {
         self.heap.is_empty()
     }
@@ -88,37 +78,58 @@ impl<T: Ord> HeapTree<T> {
     pub fn peek(&self) -> Option<&T> {
         self.heap.get(0)
     }
+
+    // assumeses that self.heap is random distributed vec
+    fn heapify_vec(&mut self) {
+        for i in (0..=self.heap.len() / 2).rev() {
+            self.sift_down(i)
+        }
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::schrage::task::{QInvariant, RInvariant, Task};
-    use crate::{correct_order, tasks};
 
     #[test]
-    fn test_custom_heap() {
-        let mut heap: HeapTree<Task> = HeapTree::new();
-        heap.push(Task::new(4, 4, 4));
-        heap.push(Task::new(2, 2, 2));
-        heap.push(Task::new(1, 1, 1));
-        heap.push(Task::new(3, 3, 3));
-        assert_eq!(heap.pop(), Some(Task::new(4, 4, 4)));
-        assert_eq!(heap.pop(), Some(Task::new(3, 3, 3)));
-        assert_eq!(heap.pop(), Some(Task::new(2, 2, 2)));
-        assert_eq!(heap.pop(), Some(Task::new(1, 1, 1)));
+    fn test_heapify_vec() {
+        let mut heap = HeapTree::from(vec![1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        assert_eq!(heap.heap, vec![9, 8, 7, 4, 5, 6, 3, 2, 1]);
+        heap.heapify_vec();
+        assert_eq!(heap.heap, vec![9, 8, 7, 4, 5, 6, 3, 2, 1]);
+    }
+
+    #[test]
+    fn test_push() {
+        let mut heap = HeapTree::new();
+        heap.push(1);
+        heap.push(2);
+        heap.push(3);
+        heap.push(4);
+        heap.push(5);
+        heap.push(6);
+        heap.push(7);
+        heap.push(8);
+        heap.push(9);
+        assert_eq!(heap.pop(), Some(9));
+    }
+
+    #[test]
+    fn test_pop() {
+        let mut heap = HeapTree::new();
+        heap.push(1);
+        heap.push(2);
+        heap.push(3);
+        assert_eq!(heap.pop(), Some(3));
+        assert_eq!(heap.pop(), Some(2));
+        assert_eq!(heap.pop(), Some(1));
         assert_eq!(heap.pop(), None);
     }
 
     #[test]
-    fn test_comparisons_rinvariant() {
-        let mut heap: HeapTree<RInvariant> = tasks!().iter().map(|t| t.into()).collect();
-        assert_eq!(heap.pop().unwrap(), Task::new(0, 6, 17).into());
-    }
-
-    #[test]
-    fn test_comparisons_qinvariant() {
-        let mut heap: HeapTree<QInvariant> = tasks!().iter().map(|t| t.into()).collect();
-        assert_eq!(heap.pop().unwrap().0, Task::new(13, 6, 26).into());
+    fn test_sift_down() {
+        let mut heap = HeapTree::from(vec![1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        heap.sift_down(0);
+        assert_eq!(heap.heap, vec![9, 8, 7, 4, 5, 6, 3, 2, 1]);
     }
 }

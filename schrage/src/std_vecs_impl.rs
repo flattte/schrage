@@ -1,5 +1,4 @@
-#![allow(unused)]
-use crate::schrage::task::Task;
+use crate::task::Task;
 use std::cmp::max;
 
 pub fn schrage_vecs_sort_q_cmax(mut tasks: Vec<Task>) -> u32 {
@@ -114,7 +113,7 @@ pub fn schrage_preemptive_vecs_cmax(mut tasks: Vec<Task>) -> u32 {
             .filter(|(_, task)| task.r <= t)
             .max_by(|(_, a), (_, b)| a.q.cmp(&b.q))
         {
-            let task = *task; // clone out of the vec so the references are valid
+            let task = task.to_owned(); // copy out of the vec so the references are valid
             if let Some(ref mut current) = current_task {
                 if task.q > current.q {
                     current.p = t - task.r;
@@ -141,7 +140,32 @@ pub fn schrage_preemptive_vecs_cmax(mut tasks: Vec<Task>) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{correct_order, tasks};
+    macro_rules! tasks {
+        () => {
+            vec![
+                Task::new(30, 3, 8),
+                Task::new(20, 4, 21),
+                Task::new(10, 5, 7),
+                Task::new(11, 7, 24),
+                Task::new(30, 2, 0),
+                Task::new(13, 6, 26),
+                Task::new(0, 6, 17),
+            ]
+        };
+    }
+    macro_rules! correct_order {
+        () => {
+            vec![
+                Task::new(0, 6, 17),
+                Task::new(10, 5, 7),
+                Task::new(13, 6, 26),
+                Task::new(11, 7, 24),
+                Task::new(20, 4, 21),
+                Task::new(30, 3, 8),
+                Task::new(30, 2, 0),
+            ]
+        };
+    }
 
     #[test]
     fn schrage_vecs_sort_q_test() {

@@ -1,6 +1,5 @@
-#![allow(unused)]
-use crate::schrage::task::{QInvariant, RInvariant, Task};
-use std::cmp::{max, Ordering};
+use crate::task::{QInvariant, RInvariant, Task};
+use std::cmp::max;
 use std::collections::BinaryHeap;
 
 pub fn schrage_heaps_std(tasks: Vec<Task>) -> (Vec<Task>, u32) {
@@ -89,7 +88,7 @@ pub fn schrage_preemptive_heaps_std_cmax(tasks: Vec<Task>) -> u32 {
             continue;
         }
 
-        let mut task_to_do = available_tasks.pop().unwrap().0;
+        let task_to_do = available_tasks.pop().unwrap().0;
         t += task_to_do.p;
         cmax = max(cmax, t + task_to_do.q);
         current_task = Some(task_to_do);
@@ -101,7 +100,33 @@ pub fn schrage_preemptive_heaps_std_cmax(tasks: Vec<Task>) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{correct_order, tasks};
+
+    macro_rules! tasks {
+        () => {
+            vec![
+                Task::new(30, 3, 8),
+                Task::new(20, 4, 21),
+                Task::new(10, 5, 7),
+                Task::new(11, 7, 24),
+                Task::new(30, 2, 0),
+                Task::new(13, 6, 26),
+                Task::new(0, 6, 17),
+            ]
+        };
+    }
+    macro_rules! correct_order {
+        () => {
+            vec![
+                Task::new(0, 6, 17),
+                Task::new(10, 5, 7),
+                Task::new(13, 6, 26),
+                Task::new(11, 7, 24),
+                Task::new(20, 4, 21),
+                Task::new(30, 3, 8),
+                Task::new(30, 2, 0),
+            ]
+        };
+    }
 
     #[test]
     fn test_schrage_heaps() {

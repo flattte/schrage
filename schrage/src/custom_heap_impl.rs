@@ -1,7 +1,6 @@
-#![allow(unused)]
-use crate::schrage::heap_tree::HeapTree;
-use crate::schrage::task::{QInvariant, RInvariant, Task};
-use std::cmp::{max, Ordering};
+use crate::task::{QInvariant, RInvariant, Task};
+use heap::HeapTree;
+use std::cmp::max;
 
 pub fn schrage_custom_heaps(tasks: Vec<Task>) -> (Vec<Task>, u32) {
     let mut available_tasks: HeapTree<QInvariant> = HeapTree::new();
@@ -100,7 +99,34 @@ pub fn schrage_preemptive_custom_heaps_cmax(tasks: Vec<Task>) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{correct_order, tasks};
+
+    macro_rules! tasks {
+        () => {
+            vec![
+                Task::new(30, 3, 8),
+                Task::new(20, 4, 21),
+                Task::new(10, 5, 7),
+                Task::new(11, 7, 24),
+                Task::new(30, 2, 0),
+                Task::new(13, 6, 26),
+                Task::new(0, 6, 17),
+            ]
+        };
+    }
+
+    macro_rules! correct_order {
+        () => {
+            vec![
+                Task::new(0, 6, 17),
+                Task::new(10, 5, 7),
+                Task::new(13, 6, 26),
+                Task::new(11, 7, 24),
+                Task::new(20, 4, 21),
+                Task::new(30, 3, 8),
+                Task::new(30, 2, 0),
+            ]
+        };
+    }
 
     #[test]
     fn test_schrage_heaps() {
