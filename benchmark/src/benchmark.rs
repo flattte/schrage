@@ -1,14 +1,10 @@
-#![allow(unused)]
 use core::ops::Range;
-use criterion::{
-    black_box, criterion_group, criterion_main, BenchmarkId, Criterion, PlotConfiguration,
-    SamplingMode,
-};
+use criterion::{criterion_group, criterion_main};
+use criterion::{BenchmarkId, Criterion, PlotConfiguration, SamplingMode};
 use lazy_static::lazy_static;
-use rand::{thread_rng, Rng};
+use rand::Rng;
+use schrage::{custom_heap_impl::*, std_heap_impl::*, std_vecs_impl::*, task::Task};
 use std::time::Duration;
-mod schrage;
-use crate::schrage::{heap_binary::*, std_heaps::*, std_vecs::*, task::Task};
 
 fn gen_uniform(
     amount: usize,
@@ -56,7 +52,7 @@ fn bench_algs_preemptive(c: &mut Criterion) {
         .plot_config(PlotConfiguration::default())
         .warm_up_time(Duration::from_secs(1));
 
-    for (idx, tasks) in sets_of_tasks.iter().enumerate() {
+    for tasks in sets_of_tasks {
         group.bench_with_input(
             BenchmarkId::new("schrage_preemptive_heaps_std_cmax", &tasks.len()),
             tasks,
@@ -84,7 +80,7 @@ fn bench_algs(c: &mut Criterion) {
         .plot_config(PlotConfiguration::default())
         .warm_up_time(Duration::from_secs(1));
 
-    for (idx, tasks) in sets_of_tasks.iter().enumerate() {
+    for tasks in sets_of_tasks {
         group.bench_with_input(
             BenchmarkId::new("schrage_heaps_std_cmax", &tasks.len()),
             tasks,
@@ -121,7 +117,7 @@ fn bench_on_big_data(c: &mut Criterion) {
         .plot_config(PlotConfiguration::default())
         .warm_up_time(Duration::from_secs(1));
 
-    for (idx, tasks) in sets_of_tasks.iter().enumerate() {
+    for tasks in sets_of_tasks {
         group.bench_with_input(
             BenchmarkId::new("schrage_preemptive_heaps_std_cmax", &tasks.len()),
             tasks,
@@ -154,7 +150,7 @@ fn single_iter_through_long_data(c: &mut Criterion) {
         .sampling_mode(SamplingMode::Flat)
         .plot_config(PlotConfiguration::default())
         .warm_up_time(Duration::from_secs(1));
-    for (idx, tasks) in sets_of_tasks.iter().enumerate() {
+    for tasks in sets_of_tasks {
         group.bench_with_input(
             BenchmarkId::new("schrage_preemptive_heaps_std_cmax", &tasks.len()),
             tasks,

@@ -1,0 +1,15 @@
+[package]
+name = "benchmark"
+version = "0.1.0"
+edition = "2021"
+
+[[bench]]
+name = "benchmark"
+path = "src/benchmark.rs"
+harness = false
+
+[dependencies]
+lazy_static = "1.4.0"
+criterion = {version= "0.5.1", features = ["html_reports"]}
+rand = "0.8.5"
+schrage = {path = "../schrage"}
